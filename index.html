@@ -1,0 +1,120 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+
+<head>
+  <title>Typing Hero</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script>
+  <script>
+  var paused = false;
+  var chars = "asdfghjkl"
+  var score;
+  var userLetter = "";
+
+  // var letter1 = new Letter();
+
+  var letters = [];
+
+    function setup() {
+      createCanvas(500, 500);
+      background(200);
+      noStroke();
+      rectMode(CENTER);
+
+      score = 0;
+      letters.push(new Letter());
+    }
+
+    function draw() {
+      background(200);
+
+      fill(0);
+      rectMode(CENTER);
+      rect(width/2,height-25,300,50);
+
+      for(var i=0; i<letters.length; i++) {
+        if (letters[i].alive && checkCollide(letters[i])) {
+          if (checkLetterMatch(letters[i])) {
+            score++;
+          } else score--;
+        } else {
+          paused ? null : letters[i].move();
+          letters[i].alive ? letters[i].display() : null;
+        }
+      }
+
+      //score
+      fill(0);
+      rect(width/2,25,300,50);
+      score = constrain(score,0,999999);
+      fill(255);
+      textSize(40);
+      textAlign(CENTER);
+      textFont("Helvetica");
+      text("Score: "+ score, width / 2,40);
+
+
+      //letter
+      fill(0);
+      rect(width/2,height-25,300,50);
+      fill(255);
+      text(userLetter,width/2,height-12);
+
+    }
+
+    function keyPressed() {
+      userLetter = key.toLowerCase();
+
+      if(keyCode == ENTER || keyCode == RETURN){
+        paused = !paused;
+      }
+    }
+
+    function Letter(){
+      this.x = 250;
+      this.y = 0;
+      this.speed = 7;
+      this.char = chars[Math.floor(Math.random() * chars.length)];
+      this.alive = true;
+
+      this.move = function(){
+        this.y += this.speed;
+      }
+
+      this.display = function(){
+        fill(0);
+        textSize(100);
+        textAlign(CENTER);
+        textFont("Times New Roman");
+        text(this.char,this.x,this.y);
+      }
+    }
+
+    function checkCollide(letter){
+      if(letter.y>450){
+        letter.alive = false;
+        return true;
+      }  else return false;
+    }
+
+    function checkLetterMatch(letter){
+      if (letter.char == key.toLowerCase()){
+      // if (letter.char == key){
+        return true;
+      }
+      else return false;
+    }
+
+    function newLetter(){
+      letters.push(new Letter());
+    }
+
+var myVar = setInterval(newLetter, 1100);
+
+  </script>
+</head>
+
+<body>
+
+</body>
+
+</html>
