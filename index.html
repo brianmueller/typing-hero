@@ -12,6 +12,7 @@
     var wordBank = ["dog", "cat", "hat", "run"];
     var score;
     var userWord = "";
+    var currentWords = "";
 
     var words = [];
 
@@ -31,6 +32,9 @@
       scrollWords();
       showScore();
       showUserWord();
+
+      // console.log(words.length);
+
     }
 
     function keyPressed() {
@@ -49,7 +53,7 @@
       this.x = 250;
       this.y = 0;
       this.red = 0;
-      this.speed = 5;
+      this.speed = 2.5; // must be divisible by 5
       this.string = wordBank[Math.floor(Math.random() * wordBank.length)];
       this.alive = true;
 
@@ -58,7 +62,7 @@
       }
 
       this.display = function() {
-        fill(this.red,0,0);
+        fill(this.red, 0, 0);
         textSize(100);
         textAlign(CENTER);
         textFont("Times New Roman");
@@ -66,39 +70,22 @@
       }
     }
 
-    function scrollWords(){
-      /*
-      for (var i = 0; i < words.length; i++) {
-        if (words[i].alive && checkCollide(words[i])) {
-          if (checkWordMatch(words[i])) {
-            score++;
-          } else score--;
-        } else {
-          paused ? null : words[i].move();
-          words[i].alive ? words[i].display() : null;
+    function scrollWords() {
+
+      if (words.length != 0) {
+        for (var i = 0; i < words.length; i++) {
+
+          words[i].move();
+          words[i].display();
+
+          checkCollide(words[i]);
+          checkWordMatch(words[i]);
+
         }
       }
-      */
-
-      for (var i=0; i < words.length; i++){
-        words[i].move();
-        words[i].alive ? words[i].display() : null;
-
-        if(checkCollide(words[i])){
-          userWord = "";
-          score--;
-        }
-
-        if (words[i].alive && checkWordMatch(words[i])) {
-          words[i].alive = false;
-          removeWord();
-          score++;
-        }
-      }
-
     }
 
-    function showScore(){
+    function showScore() {
       fill(0);
       rect(width / 2, 25, 300, 50);
       score = constrain(score, 0, 999999);
@@ -109,7 +96,7 @@
       text("Score: " + score, width / 2, 40);
     }
 
-    function showUserWord(){
+    function showUserWord() {
       fill(0);
       rect(width / 2, height - 25, 300, 50);
       fill(255);
@@ -117,45 +104,51 @@
       text(userWord, width / 2, height - 12);
     }
 
-    function checkCollide(word) {
-      // if (word.y > height-50 && word.y < height) {
-      if (word.y == height-50) {
-        word.red = 255;
-        return true;
-      } else return false;
-      if (word.y > height){
-        word.alive = false; // redundant?
-        removeWord();
-      }
-    }
 
     function checkWordMatch(word) {
       if (word.string == userWord) {
         userWord = "";
-        return true;
-      } else return false;
+        removeWord();
+        score++;
+      }
     }
+
+    function checkCollide(word) {
+      // if (word.y > height-50 && word.y < height) {
+      if (word.y == height - 50) {
+        word.red = 255;
+        score--;
+        userWord = "";
+        // return true;
+      }
+      // else return false;
+      if (word.y > height) {
+        // word.alive = false; // redundant?
+        removeWord();
+      }
+    }
+
 
     function newWord() {
       words.push(new Word());
 
 
-      var currentWords = "";
+      currentWords = "";
 
-      for (var i=0; i < words.length; i++){
-        currentWords += words[i].string;
+      for (var i = 0; i < words.length; i++) {
+        currentWords += words[i].string + ", ";
       }
-      console.log(currentWords);
+      // console.log(currentWords);
     }
 
-    function removeWord(){
-      words.splice(0,1); // remove the first object from the array (index, how many)
-
+    function removeWord() {
+      words.splice(0, 1); // remove the first object from the array (index, how many) -- empty object at index 0?
+      // return currentWords;
     }
 
-    setInterval(newWord, 1500);
+    setInterval(newWord, 2000); // add new words
+
     // setTimeout(function(){setInterval(removeWord, 1100)},10000); // wait 10 seconds before deleting
-
   </script>
 </head>
 
