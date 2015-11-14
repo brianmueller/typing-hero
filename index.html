@@ -3,44 +3,102 @@
 
 <head>
   <title>Typing Hero</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script> -->
+  <script src="p5.js"></script>
   <script>
     var paused = false;
-    var chars = "asdfghjkl"
+    // var chars = "asdfghjkl"
+    // var wordBank = ["a", "s", "d", "f"];
+    var wordBank = ["dog", "cat", "hat", "run"];
     var score;
-    var userLetter = "";
+    var userWord = "";
 
-    var letters = [];
+    var words = [];
 
     function setup() {
-      createCanvas(500, 500);
+      createCanvas(500, 700);
       background(200);
       noStroke();
       rectMode(CENTER);
 
       score = 0;
-      letters.push(new Letter());
+      words.push(new Word());
     }
 
     function draw() {
       background(200);
 
-      fill(0);
-      rectMode(CENTER);
-      rect(width / 2, height - 25, 300, 50);
+      scrollWords();
+      showScore();
+      showUserWord();
+    }
 
-      for (var i = 0; i < letters.length; i++) {
-        if (letters[i].alive && checkCollide(letters[i])) {
-          if (checkLetterMatch(letters[i])) {
+    function keyPressed() {
+      userWord = userWord + key.toLowerCase();
+
+      if (keyCode == BACKSPACE || keyCode == DELETE) {
+        userWord = "";
+      }
+
+      // if (keyCode == ENTER || keyCode == RETURN) {
+      //   paused = !paused;
+      // }
+    }
+
+    function Word() {
+      this.x = 250;
+      this.y = 0;
+      this.red = 0;
+      this.speed = 5;
+      this.string = wordBank[Math.floor(Math.random() * wordBank.length)];
+      this.alive = true;
+
+      this.move = function() {
+        this.y += this.speed;
+      }
+
+      this.display = function() {
+        fill(this.red,0,0);
+        textSize(100);
+        textAlign(CENTER);
+        textFont("Times New Roman");
+        text(this.string, this.x, this.y);
+      }
+    }
+
+    function scrollWords(){
+      /*
+      for (var i = 0; i < words.length; i++) {
+        if (words[i].alive && checkCollide(words[i])) {
+          if (checkWordMatch(words[i])) {
             score++;
           } else score--;
         } else {
-          paused ? null : letters[i].move();
-          letters[i].alive ? letters[i].display() : null;
+          paused ? null : words[i].move();
+          words[i].alive ? words[i].display() : null;
+        }
+      }
+      */
+
+      for (var i=0; i < words.length; i++){
+        words[i].move();
+        words[i].alive ? words[i].display() : null;
+
+        if(checkCollide(words[i])){
+          userWord = "";
+          score--;
+        }
+
+        if (words[i].alive && checkWordMatch(words[i])) {
+          words[i].alive = false;
+          removeWord();
+          score++;
         }
       }
 
-      //score
+    }
+
+    function showScore(){
       fill(0);
       rect(width / 2, 25, 300, 50);
       score = constrain(score, 0, 999999);
@@ -49,61 +107,55 @@
       textAlign(CENTER);
       textFont("Helvetica");
       text("Score: " + score, width / 2, 40);
+    }
 
-      //letter
+    function showUserWord(){
       fill(0);
       rect(width / 2, height - 25, 300, 50);
       fill(255);
       textFont("Times New Roman");
-      text(userLetter, width / 2, height - 12);
+      text(userWord, width / 2, height - 12);
     }
 
-    function keyPressed() {
-      userLetter = key.toLowerCase();
-
-      if (keyCode == ENTER || keyCode == RETURN) {
-        paused = !paused;
+    function checkCollide(word) {
+      // if (word.y > height-50 && word.y < height) {
+      if (word.y == height-50) {
+        word.red = 255;
+        return true;
+      } else return false;
+      if (word.y > height){
+        word.alive = false; // redundant?
+        removeWord();
       }
     }
 
-    function Letter() {
-      this.x = 250;
-      this.y = 0;
-      this.speed = 7;
-      this.char = chars[Math.floor(Math.random() * chars.length)];
-      this.alive = true;
-
-      this.move = function() {
-        this.y += this.speed;
-      }
-
-      this.display = function() {
-        fill(0);
-        textSize(100);
-        textAlign(CENTER);
-        textFont("Times New Roman");
-        text(this.char, this.x, this.y);
-      }
-    }
-
-    function checkCollide(letter) {
-      if (letter.y > 450) {
-        letter.alive = false;
+    function checkWordMatch(word) {
+      if (word.string == userWord) {
+        userWord = "";
         return true;
       } else return false;
     }
 
-    function checkLetterMatch(letter) {
-      if (letter.char == key.toLowerCase()) {
-        return true;
-      } else return false;
+    function newWord() {
+      words.push(new Word());
+
+
+      var currentWords = "";
+
+      for (var i=0; i < words.length; i++){
+        currentWords += words[i].string;
+      }
+      console.log(currentWords);
     }
 
-    function newLetter() {
-      letters.push(new Letter());
+    function removeWord(){
+      words.splice(0,1); // remove the first object from the array (index, how many)
+
     }
 
-    var myVar = setInterval(newLetter, 1100);
+    setInterval(newWord, 1500);
+    // setTimeout(function(){setInterval(removeWord, 1100)},10000); // wait 10 seconds before deleting
+
   </script>
 </head>
 
