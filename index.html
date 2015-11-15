@@ -6,10 +6,15 @@
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script> -->
   <script src="p5.js"></script>
   <script>
-    var paused = false;
-    // var chars = "asdfghjkl"
-    // var wordBank = ["a", "s", "d", "f"];
-    var wordBank = ["dog", "cat", "hat", "run"];
+    var started = false;
+
+    var homerow = ["ask", "all", "dads", "fall", "ads", "as", "fad", "asks", "sad", "had", "dad", "shall"]
+    var char3 = ["the", "and", "for", "are", "but", "not", "you", "all", "any", "can", "her", "was", "one", "our", "out", "day", "get", "has", "him",
+      "his", "how", "man", "new", "now", "old", "see", "two", "way", "who", "boy", "did", "its", "let",
+      "put", "say", "she", "too", "use", "dad", "mom"
+    ];
+    var wordBank = homerow;
+
     var score;
     var userWord = "";
     var currentWords = "";
@@ -17,7 +22,7 @@
     var words = [];
 
     function setup() {
-      createCanvas(500, 700);
+      createCanvas(500, 600);
       background(200);
       noStroke();
       rectMode(CENTER);
@@ -29,31 +34,35 @@
     function draw() {
       background(200);
 
-      scrollWords();
+      if (started) {
+        scrollWords();
+      } else userWord = "";
+
       showScore();
       showUserWord();
-
-      // console.log(words.length);
-
     }
 
     function keyPressed() {
       userWord = userWord + key.toLowerCase();
 
       if (keyCode == BACKSPACE || keyCode == DELETE) {
-        userWord = "";
+        // userWord = "";
+        userWord = userWord.slice(0, userWord.length - 2);
       }
 
-      // if (keyCode == ENTER || keyCode == RETURN) {
-      //   paused = !paused;
-      // }
+      if (keyCode == ENTER || keyCode == RETURN) {
+        if (!started) {
+          setInterval(newWord, 1100); // add new words
+          started = true;
+        }
+      }
     }
 
     function Word() {
       this.x = 250;
       this.y = 0;
       this.red = 0;
-      this.speed = 2.5; // must be divisible by 5
+      this.speed = 5; // must be divisible by 5
       this.string = wordBank[Math.floor(Math.random() * wordBank.length)];
       this.alive = true;
 
@@ -74,20 +83,18 @@
 
       if (words.length != 0) {
         for (var i = 0; i < words.length; i++) {
-
           words[i].move();
           words[i].display();
 
           checkCollide(words[i]);
           checkWordMatch(words[i]);
-
         }
       }
     }
 
     function showScore() {
       fill(0);
-      rect(width / 2, 25, 300, 50);
+      rect(width / 2, 25, width, 50);
       score = constrain(score, 0, 999999);
       fill(255);
       textSize(40);
@@ -98,7 +105,7 @@
 
     function showUserWord() {
       fill(0);
-      rect(width / 2, height - 25, 300, 50);
+      rect(width / 2, height - 25, width, 50);
       fill(255);
       textFont("Times New Roman");
       text(userWord, width / 2, height - 12);
@@ -114,39 +121,32 @@
     }
 
     function checkCollide(word) {
-      // if (word.y > height-50 && word.y < height) {
-      if (word.y == height - 50) {
+      if (word.y > height - 50) {
         word.red = 255;
-        score--;
         userWord = "";
-        // return true;
       }
-      // else return false;
+
       if (word.y > height) {
-        // word.alive = false; // redundant?
         removeWord();
+        score--;
       }
     }
 
-
     function newWord() {
       words.push(new Word());
-
 
       currentWords = "";
 
       for (var i = 0; i < words.length; i++) {
         currentWords += words[i].string + ", ";
       }
-      // console.log(currentWords);
     }
 
     function removeWord() {
       words.splice(0, 1); // remove the first object from the array (index, how many) -- empty object at index 0?
-      // return currentWords;
     }
 
-    setInterval(newWord, 2000); // add new words
+
 
     // setTimeout(function(){setInterval(removeWord, 1100)},10000); // wait 10 seconds before deleting
   </script>
