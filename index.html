@@ -22,7 +22,7 @@
     var words = [];
 
     function setup() {
-      createCanvas(500, 600);
+      createCanvas(windowWidth, 600);
       background(200);
       noStroke();
       rectMode(CENTER);
@@ -59,7 +59,7 @@
     }
 
     function Word() {
-      this.x = 250;
+      this.x = width/2;
       this.y = 0;
       this.red = 0;
       this.speed = 5; // must be divisible by 5
