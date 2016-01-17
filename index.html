@@ -7,7 +7,6 @@
   <script src="p5.js"></script>
   <script>
     var started = false;
-    var spacing;
 
     var homerow = ["ask", "all", "dads", "fall", "ads", "as", "fad", "asks", "sad", "had", "dad", "shall"]
     var char3 = ["the", "and", "for", "are", "but", "not", "you", "all", "any", "can", "her", "was", "one", "our", "out", "day", "get", "has", "him",
@@ -25,7 +24,7 @@
 
     function setup() {
       createCanvas(windowWidth, 600);
-      background(200);
+      background(255);
       noStroke();
       rectMode(CENTER);
 
@@ -35,7 +34,7 @@
     }
 
     function draw() {
-      background(200);
+      background(255);
       console.log(speed);
 
       if (started) {
@@ -152,14 +151,13 @@
     }
 
 
-
     // setTimeout(function(){setInterval(removeWord, 1100)},10000); // wait 10 seconds before deleting
   </script>
 
   <style type="text/css">
     body {
       overflow: hidden;
-      background-color: #C8C8C8;
+      background-color: #FFFFFF;
     }
   </style>
 </head>
