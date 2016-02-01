@@ -35,11 +35,18 @@
 
     function draw() {
       background(255);
-      console.log(speed);
+      // console.log(speed);
 
       if (started) {
         scrollWords();
-      } else userWord = "";
+      } else {
+        fill(0);
+        textSize(40);
+        textAlign(CENTER);
+        textFont("Helvetica");
+        text("Press ENTER to Start", width / 2, 300);
+        userWord = "";
+      }
 
       showScore();
       showUserWord();
@@ -59,10 +66,17 @@
           started = true;
         }
       }
+
+      if (key == "0"){
+        noLoop();
+      }
+      else if (key == "1"){
+        loop();
+      }
     }
 
     function Word() {
-      this.x = width/2;
+      this.x = width / 2;
       this.y = 0;
       this.red = 0;
       this.speed = speed; // must be divisible by 5
