@@ -5,8 +5,10 @@
   <title>Typing Hero</title>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script> -->
   <script src="p5.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script>
     var started = false;
+    var interval_id;
 
     var homerow = ["ask", "all", "dads", "fall", "ads", "as", "fad", "asks", "sad", "had", "dad", "shall"]
     var char3 = ["the", "and", "for", "are", "but", "not", "you", "all", "any", "can", "her", "was", "one", "our", "out", "day", "get", "has", "him",
@@ -61,17 +63,27 @@
       }
 
       if (keyCode == ENTER || keyCode == RETURN) {
+        userWord = "";
         if (!started) {
-          setInterval(newWord, 1800); // add new words
-          started = true;
+          // setInterval(newWord, 1800); // add new words
+          if (!interval_id) {
+            interval_id = setInterval(newWord, 1800);
+            started = true;
+          }
         }
       }
 
-      if (key == "0"){
+      if (key == "0") {
         noLoop();
-      }
-      else if (key == "1"){
+        clearInterval(interval_id);
+        interval_id = 0;
+        userWord = "";
+      } else if (key == "1") {
         loop();
+        if (!interval_id) {
+          interval_id = setInterval(newWord, 1800);
+        }
+        userWord = "";
       }
     }
 
@@ -130,7 +142,7 @@
 
 
     function checkWordMatch(word) {
-      if (word.string == userWord) {
+      if (word.string == userWord.toString()) {
         userWord = "";
         removeWord();
         score++;
@@ -141,11 +153,16 @@
     function checkCollide(word) {
       if (word.y > height - 50) {
         word.red = 255;
-        userWord = "";
+
       }
 
       if (word.y > height) {
+        console.log("length: " + words.length);
+        console.log("words: " + words);
+        console.log("userWord: " + userWord);
+        console.log("speed: " + speed);
         removeWord();
+        userWord = "";
         score--;
       }
     }
@@ -166,6 +183,20 @@
 
 
     // setTimeout(function(){setInterval(removeWord, 1100)},10000); // wait 10 seconds before deleting
+
+
+    $(window).focus(function() {
+      if (!interval_id)
+        interval_id = setInterval(newWord, 1800);
+      console.log("focused");
+    });
+
+    $(window).blur(function() {
+      clearInterval(interval_id);
+      interval_id = 0;
+      userWord = "";
+      console.log("blurred");
+    });
   </script>
 
   <style type="text/css">
@@ -177,6 +208,8 @@
 </head>
 
 <body>
+
+
 
 </body>
 
