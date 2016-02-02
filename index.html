@@ -8,7 +8,9 @@
   <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
   <script>
     var started = false;
-    var interval_id;
+    var newestWordFrame; // frame timestamp of most recent word
+    var maxFrameGap = 108; // 1.8 seconds (60fps*1.8s)
+    var frameGap = maxFrameGap;
 
     var homerow = ["ask", "all", "dads", "fall", "ads", "as", "fad", "asks", "sad", "had", "dad", "shall"]
     var char3 = ["the", "and", "for", "are", "but", "not", "you", "all", "any", "can", "her", "was", "one", "our", "out", "day", "get", "has", "him",
@@ -18,6 +20,7 @@
     var wordBank = char3;
 
     var score;
+    var minSpeed;
     var speed;
     var userWord = "";
     var currentWords = "";
@@ -25,52 +28,58 @@
     var words = [];
 
     function setup() {
-      createCanvas(windowWidth, 600);
+      createCanvas(windowWidth, windowHeight-50);
       background(255);
       noStroke();
       rectMode(CENTER);
 
-      speed = 3;
+      minSpeed = 3;
+      speed = minSpeed;
       score = 0;
-      words.push(new Word());
     }
 
     function draw() {
       background(255);
-      // console.log(speed);
 
       if (started) {
         scrollWords();
+        newWord();
       } else {
         fill(0);
         textSize(40);
         textAlign(CENTER);
         textFont("Helvetica");
-        text("Press ENTER to Start", width / 2, 300);
+        text("Press ENTER to Start", width / 2, height/2);
         userWord = "";
       }
 
       showScore();
       showUserWord();
+
+      //testing
+      // fill(0);
+      // textAlign(LEFT);
+      // textSize(20);
+      // text("frameCount: " + frameCount,100,200);
+      // text("newestWordFrame: " + newestWordFrame,100,250);
+      // text("frameGap: " + frameGap,100,300);
+      // text("speed: " + speed,100,350);
     }
 
     function keyPressed() {
       userWord = userWord + key.toLowerCase();
 
       if (keyCode == BACKSPACE || keyCode == DELETE) {
-        // userWord = "";
         userWord = userWord.slice(0, userWord.length - 2);
       }
 
       if (keyCode == ENTER || keyCode == RETURN) {
         userWord = "";
-        if (!started) {
-          // setInterval(newWord, 1800); // add new words
-          if (!interval_id) {
-            interval_id = setInterval(newWord, 1800);
-            started = true;
-          }
+        if(!started){
+          words.push(new Word());
+          newestWordFrame = frameCount;
         }
+        started = true;
       }
 
       if (key == "0") {
@@ -91,7 +100,7 @@
       this.x = width / 2;
       this.y = 0;
       this.red = 0;
-      this.speed = speed; // must be divisible by 5
+      this.speed = speed;
       this.string = wordBank[Math.floor(Math.random() * wordBank.length)];
       this.alive = true;
 
@@ -146,7 +155,8 @@
         userWord = "";
         removeWord();
         score++;
-        speed += 0.1;
+        speed += 0.15;
+        frameGap = Math.round(frameGap*0.95); // make it get harder
       }
     }
 
@@ -164,39 +174,29 @@
         removeWord();
         userWord = "";
         score--;
+        speed -= 0.15;
+        speed = constrain(speed,minSpeed,99999);
+        frameGap = Math.round(frameGap*1.05); // make it get easier
+        frameGap = constrain(frameGap,1,maxFrameGap);
       }
     }
 
     function newWord() {
-      words.push(new Word());
-
-      currentWords = "";
-
-      for (var i = 0; i < words.length; i++) {
-        currentWords += words[i].string + ", ";
+      if(frameCount - newestWordFrame >= frameGap){ // if enough frames have passed
+        words.push(new Word()); // insert a new word
+        newestWordFrame = frameCount; // reset the newestWordFrame
       }
+
+      // currentWords = "";
+      //
+      // for (var i = 0; i < words.length; i++) {
+      //   currentWords += words[i].string + ", ";
+      // }
     }
 
     function removeWord() {
       words.splice(0, 1); // remove the first object from the array (index, how many) -- empty object at index 0?
     }
-
-
-    // setTimeout(function(){setInterval(removeWord, 1100)},10000); // wait 10 seconds before deleting
-
-
-    $(window).focus(function() {
-      if (!interval_id)
-        interval_id = setInterval(newWord, 1800);
-      console.log("focused");
-    });
-
-    $(window).blur(function() {
-      clearInterval(interval_id);
-      interval_id = 0;
-      userWord = "";
-      console.log("blurred");
-    });
   </script>
 
   <style type="text/css">
