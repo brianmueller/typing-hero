@@ -5,7 +5,7 @@
   <title>Typing Hero</title>
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.4.13/p5.js"></script> -->
   <script src="p5.js"></script>
-  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+  <!-- <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script> -->
   <script>
     var started = false;
     var newestWordFrame; // frame timestamp of most recent word
@@ -84,14 +84,9 @@
 
       if (key == "0") {
         noLoop();
-        clearInterval(interval_id);
-        interval_id = 0;
         userWord = "";
       } else if (key == "1") {
         loop();
-        if (!interval_id) {
-          interval_id = setInterval(newWord, 1800);
-        }
         userWord = "";
       }
     }
@@ -163,14 +158,12 @@
     function checkCollide(word) {
       if (word.y > height - 50) {
         word.red = 255;
-
       }
 
       if (word.y > height) {
         console.log("length: " + words.length);
         console.log("words: " + words);
-        console.log("userWord: " + userWord);
-        console.log("speed: " + speed);
+        logWords();
         removeWord();
         userWord = "";
         score--;
@@ -186,16 +179,16 @@
         words.push(new Word()); // insert a new word
         newestWordFrame = frameCount; // reset the newestWordFrame
       }
-
-      // currentWords = "";
-      //
-      // for (var i = 0; i < words.length; i++) {
-      //   currentWords += words[i].string + ", ";
-      // }
     }
 
     function removeWord() {
       words.splice(0, 1); // remove the first object from the array (index, how many) -- empty object at index 0?
+    }
+
+    function logWords(){
+      for(var i=0; i<words.length; i++){
+        console.log(words[i]);
+      }
     }
   </script>
 
