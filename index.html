@@ -9,7 +9,7 @@
   <script>
     var started = false;
     var newestWordFrame; // frame timestamp of most recent word
-    var maxFrameGap = 108; // 1.8 seconds (60fps*1.8s)
+    var maxFrameGap = 60; // 1.8 seconds (60fps*1.8s)
     var frameGap = maxFrameGap;
 
     var homerow = ["ask", "all", "dads", "fall", "ads", "as", "fad", "asks", "sad", "had", "dad", "shall"]
@@ -17,9 +17,13 @@
       "his", "how", "man", "new", "now", "old", "see", "two", "way", "who", "boy", "did", "its", "let",
       "put", "say", "she", "too", "use", "dad", "mom"
     ];
+    var char4 = ["home", "that", "puts", "pull", "push", "wear", "ruin", "yawn", "adds", "save", "guys", "gals", "boys", "fair",
+      "news", "bear", "bare", "blue", "gray", "move", "free", "jump", "hike", "lose", "numb"
+    ];
     var wordBank = char3;
 
     var score;
+    var highScore;
     var minSpeed;
     var speed;
     var userWord = "";
@@ -36,6 +40,7 @@
       minSpeed = 3;
       speed = minSpeed;
       score = 0;
+      highScore = 0;
     }
 
     function draw() {
@@ -55,15 +60,7 @@
 
       showScore();
       showUserWord();
-
-      //testing
-      // fill(0);
-      // textAlign(LEFT);
-      // textSize(20);
-      // text("frameCount: " + frameCount,100,200);
-      // text("newestWordFrame: " + newestWordFrame,100,250);
-      // text("frameGap: " + frameGap,100,300);
-      // text("speed: " + speed,100,350);
+      // showStats();
     }
 
     function keyPressed() {
@@ -135,6 +132,9 @@
       textAlign(CENTER);
       textFont("Helvetica");
       text("Score: " + score, width / 2, 40);
+      fill(255,100,100);
+      textSize(30);
+      if(highScore>0) text("Best: " + highScore, width / 2 + 200, 35);
     }
 
     function showUserWord() {
@@ -151,8 +151,10 @@
         userWord = "";
         removeWord();
         score++;
-        speed += 0.15;
-        frameGap = Math.round(frameGap*0.95); // make it get harder
+        if(score>highScore) highScore = score;
+        speed += 0.20;
+        // frameGap = Math.round(frameGap*1.05); // space out the words more to compensate for speed
+        frameGap -= 0.2;
       }
     }
 
@@ -168,9 +170,10 @@
         removeWord();
         userWord = "";
         score--;
-        speed -= 0.15;
+        speed -= 0.20;
         speed = constrain(speed,minSpeed,99999);
-        frameGap = Math.round(frameGap*1.05); // make it get easier
+        // frameGap = Math.round(frameGap*1.05); // make it get easier
+        frameGap += 0.2;
         frameGap = constrain(frameGap,1,maxFrameGap);
       }
     }
@@ -190,6 +193,16 @@
       for(var i=0; i<words.length; i++){
         console.log(words[i]);
       }
+    }
+
+    function showStats(){
+      fill(0);
+      textAlign(LEFT);
+      textSize(20);
+      text("frameCount: " + frameCount,100,200);
+      text("newestWordFrame: " + newestWordFrame,100,250);
+      text("frameGap: " + frameGap,100,300);
+      text("speed: " + speed,100,350);
     }
   </script>
 
