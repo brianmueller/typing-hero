@@ -32,7 +32,7 @@
     var words = [];
 
     function setup() {
-      createCanvas(windowWidth, windowHeight-50);
+      createCanvas(windowWidth, windowHeight - 50);
       background(255);
       noStroke();
       rectMode(CENTER);
@@ -54,7 +54,7 @@
         textSize(40);
         textAlign(CENTER);
         textFont("Helvetica");
-        text("Press ENTER to Start", width / 2, height/2);
+        text("Press ENTER to Start", width / 2, height / 2);
         userWord = "";
       }
 
@@ -68,11 +68,12 @@
 
       if (keyCode == BACKSPACE || keyCode == DELETE) {
         userWord = userWord.slice(0, userWord.length - 2);
+        return false; // prevents from navigating to previous page
       }
 
       if (keyCode == ENTER || keyCode == RETURN) {
         userWord = "";
-        if(!started){
+        if (!started) {
           words.push(new Word());
           newestWordFrame = frameCount;
         }
@@ -132,9 +133,9 @@
       textAlign(CENTER);
       textFont("Helvetica");
       text("Score: " + score, width / 2, 40);
-      fill(255,100,100);
+      fill(255, 100, 100);
       textSize(30);
-      if(highScore>0) text("Best: " + highScore, width / 2 + 200, 35);
+      if (highScore > 0) text("Best: " + highScore, width / 2 + 200, 35);
     }
 
     function showUserWord() {
@@ -151,7 +152,7 @@
         userWord = "";
         removeWord();
         score++;
-        if(score>highScore) highScore = score;
+        if (score > highScore) highScore = score;
         speed += 0.20;
         // frameGap = Math.round(frameGap*1.05); // space out the words more to compensate for speed
         frameGap -= 0.2;
@@ -171,15 +172,15 @@
         userWord = "";
         score--;
         speed -= 0.20;
-        speed = constrain(speed,minSpeed,99999);
+        speed = constrain(speed, minSpeed, 99999);
         // frameGap = Math.round(frameGap*1.05); // make it get easier
         frameGap += 0.2;
-        frameGap = constrain(frameGap,1,maxFrameGap);
+        frameGap = constrain(frameGap, 1, maxFrameGap);
       }
     }
 
     function newWord() {
-      if(frameCount - newestWordFrame >= frameGap){ // if enough frames have passed
+      if (frameCount - newestWordFrame >= frameGap) { // if enough frames have passed
         words.push(new Word()); // insert a new word
         newestWordFrame = frameCount; // reset the newestWordFrame
       }
@@ -189,21 +190,22 @@
       words.splice(0, 1); // remove the first object from the array (index, how many) -- empty object at index 0?
     }
 
-    function logWords(){
-      for(var i=0; i<words.length; i++){
+    function logWords() {
+      for (var i = 0; i < words.length; i++) {
         console.log(words[i]);
       }
     }
 
-    function showStats(){
+    function showStats() {
       fill(0);
       textAlign(LEFT);
       textSize(20);
-      text("frameCount: " + frameCount,100,200);
-      text("newestWordFrame: " + newestWordFrame,100,250);
-      text("frameGap: " + frameGap,100,300);
-      text("speed: " + speed,100,350);
+      text("frameCount: " + frameCount, 100, 200);
+      text("newestWordFrame: " + newestWordFrame, 100, 250);
+      text("frameGap: " + frameGap, 100, 300);
+      text("speed: " + speed, 100, 350);
     }
+
   </script>
 
   <style type="text/css">
