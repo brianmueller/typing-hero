@@ -20,6 +20,15 @@
     var char4 = ["home", "that", "puts", "pull", "push", "wear", "ruin", "yawn", "adds", "save", "guys", "gals", "boys", "fair",
       "news", "bear", "bare", "blue", "gray", "move", "free", "jump", "hike", "lose", "numb"
     ];
+    var char5 = ["wrist", "plane", "close", "weight", "graze", "shape", "court", "cabin", "fault", "cheap", "alarm", "cruel",
+      "rough", "attic", "aware", "stake", "budge", "spray", "sugar"
+    ];
+    var char6 = ["bittter", "makeup", "desert", "define", "leader", "rabbit", "glance", "manage", "suffer", "writer", "resist",
+      "global", "lawyer", "dealer", "freeze", "breeze", "refund"
+    ];
+    var char7 = ["provide", "mystery", "extract", "express", "develop", "pursuit", "average", "promise", "healthy", "reactor",
+      "fiction", "install", "penalty", "content", "reality", "retreat"
+    ];
     var wordBank = char3;
 
     var score;
@@ -138,6 +147,20 @@
       if (highScore > 0) text("Best: " + highScore, width / 2 + 200, 35);
     }
 
+    function updateWordBank(){
+      if(score < 10){
+        wordBank = char3;
+      } else if(score < 20){
+        wordBank = char4;
+      } else if(score < 30){
+        wordBank = char5;
+      } else if(score < 40){
+        wordBank = char6;
+      } else {
+        wordBank = char7;
+      }
+    }
+
     function showUserWord() {
       fill(0);
       rect(width / 2, height - 25, width, 50);
@@ -152,6 +175,7 @@
         userWord = "";
         removeWord();
         score++;
+        updateWordBank();
         if (score > highScore) highScore = score;
         speed += 0.20;
         // frameGap = Math.round(frameGap*1.05); // space out the words more to compensate for speed
@@ -171,6 +195,7 @@
         removeWord();
         userWord = "";
         score--;
+        updateWordBank();
         speed -= 0.20;
         speed = constrain(speed, minSpeed, 99999);
         // frameGap = Math.round(frameGap*1.05); // make it get easier
